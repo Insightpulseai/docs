@@ -1,0 +1,44 @@
+trigger:
+  branches:
+    include:
+      - main
+
+pool:
+  vmImage: ubuntu-latest
+
+variables:
+  - name: targetBranch
+    value: gh-pages
+
+steps:
+  - checkout: self
+    persistCredentials: true
+    fetchDepth: 0
+
+  - script: |
+      set -euo pipefail
+
+      # Configure git for the push
+      git config user.email "azdo-pipeline@insightpulseai.com"
+      git config user.name "AzDO Pages Deploy"
+
+      # Build the deploy payload (currently static — extend with a build step later)
+      mkdir -p _site
+      cp index.html _site/
+      cp -r assets _site/assets 2>/dev/null || true
+      # Add a .nojekyll marker so GitHub serves raw HTML
+      touch _site/.nojekyll
+
+      # Force-push _site contents to gh-pages branch
+      cd _site
+      git init
+      git checkout -b $(targetBranch)
+      git config user.email "azdo-pipeline@insightpulseai.com"
+      git config user.name "AzDO Pages Deploy"
+      git add -A
+      git commit -m "deploy: pages from $(Build.SourceVersion) [skip ci]"
+
+      # Push using the persisted credentials from checkout
+      git remote add origin $(Build.Repository.Uri)
+      git push --force origin $(targetBranch)
+    displayName: Deploy to gh-pages branch
