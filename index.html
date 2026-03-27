@@ -1,0 +1,391 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>InsightPulseAI Docs</title>
+    <meta name="description" content="Cross-repo architecture, strategy, governance, runbooks, evidence, and operating model documentation for InsightPulseAI." />
+
+    <!-- Fluent 2 Web Components (tokens + system) -->
+    <style>
+      :root {
+        /* Fluent 2 / Microsoft Learn dark palette */
+        --color-brand: #4f8ff7;
+        --color-brand-hover: #6ba1ff;
+        --color-bg-page: #1b1b1f;
+        --color-bg-card: #2d2d30;
+        --color-bg-card-hover: #363639;
+        --color-bg-hero: #0f0f13;
+        --color-text-primary: #f5f5f5;
+        --color-text-secondary: #adadb8;
+        --color-text-tertiary: #8a8a99;
+        --color-border: #404045;
+        --color-border-subtle: #333338;
+        --color-surface-overlay: rgba(79,143,247,0.08);
+        --radius-card: 8px;
+        --radius-pill: 9999px;
+        --shadow-card: 0 1px 2px rgba(0,0,0,0.24);
+        --shadow-card-hover: 0 4px 12px rgba(0,0,0,0.32);
+        --font-sans: "Segoe UI", "Segoe UI Web (West European)", system-ui, -apple-system, BlinkMacSystemFont, Roboto, "Helvetica Neue", sans-serif;
+        --font-mono: "Cascadia Code", "Cascadia Mono", Consolas, "Courier New", monospace;
+        --transition: 0.15s cubic-bezier(0.33,0,0.67,1);
+      }
+
+      *, *::before, *::after { box-sizing: border-box; }
+
+      body {
+        margin: 0;
+        font-family: var(--font-sans);
+        font-size: 14px;
+        line-height: 1.6;
+        color: var(--color-text-primary);
+        background: var(--color-bg-page);
+        -webkit-font-smoothing: antialiased;
+      }
+
+      /* ---- Top nav bar (Learn-style) ---- */
+      .topnav {
+        background: var(--color-bg-hero);
+        border-bottom: 1px solid var(--color-border-subtle);
+        display: flex;
+        align-items: center;
+        height: 48px;
+        padding: 0 24px;
+        position: sticky;
+        top: 0;
+        z-index: 100;
+      }
+      .topnav-brand {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        font-size: 15px;
+        font-weight: 600;
+        color: var(--color-text-primary);
+        text-decoration: none;
+      }
+      .topnav-brand svg { flex-shrink: 0; }
+      .topnav-divider {
+        width: 1px;
+        height: 24px;
+        background: var(--color-border);
+        margin: 0 16px;
+      }
+      .topnav-label {
+        font-size: 14px;
+        font-weight: 400;
+        color: var(--color-text-secondary);
+      }
+      .topnav-right {
+        margin-left: auto;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+      }
+      .topnav-link {
+        color: var(--color-text-secondary);
+        text-decoration: none;
+        font-size: 13px;
+        padding: 4px 8px;
+        border-radius: 4px;
+        transition: background var(--transition);
+      }
+      .topnav-link:hover {
+        background: var(--color-surface-overlay);
+        color: var(--color-text-primary);
+      }
+
+      /* ---- Hero ---- */
+      .hero {
+        background: var(--color-bg-hero);
+        padding: 56px 24px 48px;
+        text-align: center;
+      }
+      .hero h1 {
+        font-size: 2rem;
+        font-weight: 600;
+        margin: 0 0 12px;
+        letter-spacing: -0.01em;
+      }
+      .hero p {
+        color: var(--color-text-secondary);
+        font-size: 1rem;
+        margin: 0 auto;
+        max-width: 620px;
+        line-height: 1.65;
+      }
+
+      /* ---- Search bar (visual only) ---- */
+      .search-bar {
+        max-width: 560px;
+        margin: 24px auto 0;
+        position: relative;
+      }
+      .search-bar input {
+        width: 100%;
+        background: var(--color-bg-card);
+        border: 1px solid var(--color-border);
+        border-radius: 4px;
+        color: var(--color-text-primary);
+        font-family: var(--font-sans);
+        font-size: 14px;
+        padding: 10px 12px 10px 40px;
+        outline: none;
+        transition: border-color var(--transition);
+      }
+      .search-bar input::placeholder { color: var(--color-text-tertiary); }
+      .search-bar input:focus { border-color: var(--color-brand); }
+      .search-bar svg {
+        position: absolute;
+        left: 12px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: var(--color-text-tertiary);
+      }
+
+      /* ---- Browse section ---- */
+      .browse {
+        max-width: 1120px;
+        margin: 0 auto;
+        padding: 48px 24px 64px;
+      }
+      .browse h2 {
+        font-size: 1.25rem;
+        font-weight: 600;
+        margin: 0 0 24px;
+      }
+
+      /* ---- Card grid (Learn-style tiles) ---- */
+      .card-grid {
+        display: grid;
+        gap: 16px;
+        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      }
+      .card {
+        background: var(--color-bg-card);
+        border: 1px solid var(--color-border-subtle);
+        border-radius: var(--radius-card);
+        padding: 24px;
+        display: flex;
+        gap: 16px;
+        align-items: flex-start;
+        text-decoration: none;
+        color: inherit;
+        box-shadow: var(--shadow-card);
+        transition: background var(--transition), box-shadow var(--transition), border-color var(--transition);
+      }
+      .card:hover {
+        background: var(--color-bg-card-hover);
+        box-shadow: var(--shadow-card-hover);
+        border-color: var(--color-border);
+      }
+      .card-icon {
+        flex-shrink: 0;
+        width: 40px;
+        height: 40px;
+        border-radius: 8px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .card-icon svg {
+        width: 20px;
+        height: 20px;
+      }
+      .card-body { min-width: 0; }
+      .card-body h3 {
+        font-size: 15px;
+        font-weight: 600;
+        margin: 0 0 6px;
+        line-height: 1.3;
+      }
+      .card-body p {
+        font-size: 13px;
+        color: var(--color-text-secondary);
+        margin: 0;
+        line-height: 1.55;
+      }
+
+      /* Icon backgrounds per category */
+      .icon-arch { background: rgba(79,143,247,0.15); color: #4f8ff7; }
+      .icon-gov  { background: rgba(159,122,234,0.15); color: #9f7aea; }
+      .icon-run  { background: rgba(72,199,142,0.15); color: #48c78e; }
+      .icon-kb   { background: rgba(255,183,77,0.15); color: #ffb74d; }
+      .icon-ops  { background: rgba(255,107,107,0.15); color: #ff6b6b; }
+      .icon-aud  { background: rgba(56,189,248,0.15); color: #38bdf8; }
+      .icon-dev  { background: rgba(244,114,182,0.15); color: #f472b6; }
+      .icon-int  { background: rgba(163,230,53,0.15); color: #a3e635; }
+      .icon-brand{ background: rgba(251,146,60,0.15); color: #fb923c; }
+
+      /* ---- Footer ---- */
+      .footer {
+        border-top: 1px solid var(--color-border-subtle);
+        padding: 24px;
+        text-align: center;
+        font-size: 12px;
+        color: var(--color-text-tertiary);
+      }
+      .footer a {
+        color: var(--color-brand);
+        text-decoration: none;
+      }
+      .footer a:hover { text-decoration: underline; }
+
+      /* ---- Responsive ---- */
+      @media (max-width: 640px) {
+        .hero h1 { font-size: 1.5rem; }
+        .card-grid { grid-template-columns: 1fr; }
+        .topnav-label { display: none; }
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Top navigation -->
+    <nav class="topnav">
+      <a class="topnav-brand" href="/">
+        <!-- Fluent-style logo mark -->
+        <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <rect width="9" height="9" rx="1.5" fill="#4f8ff7"/>
+          <rect x="11" width="9" height="9" rx="1.5" fill="#4f8ff7" opacity="0.7"/>
+          <rect y="11" width="9" height="9" rx="1.5" fill="#4f8ff7" opacity="0.7"/>
+          <rect x="11" y="11" width="9" height="9" rx="1.5" fill="#4f8ff7" opacity="0.4"/>
+        </svg>
+        InsightPulseAI
+      </a>
+      <div class="topnav-divider"></div>
+      <span class="topnav-label">Documentation</span>
+      <div class="topnav-right">
+        <a class="topnav-link" href="https://github.com/Insightpulseai">GitHub</a>
+      </div>
+    </nav>
+
+    <!-- Hero -->
+    <section class="hero">
+      <h1>InsightPulseAI Documentation</h1>
+      <p>
+        Cross-repo architecture, governance, runbooks, and operating model
+        for the InsightPulseAI platform.
+      </p>
+      <div class="search-bar">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16" fill="currentColor"><path d="M11.5 7a4.5 4.5 0 1 1-9 0 4.5 4.5 0 0 1 9 0Zm-.82 4.74a6 6 0 1 1 1.06-1.06l3.04 3.04a.75.75 0 1 1-1.06 1.06l-3.04-3.04Z"/></svg>
+        <input type="search" placeholder="Search documentation..." disabled />
+      </div>
+    </section>
+
+    <!-- Browse -->
+    <section class="browse">
+      <h2>Browse by category</h2>
+      <div class="card-grid">
+
+        <!-- Architecture -->
+        <a class="card" href="#">
+          <div class="card-icon icon-arch">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"><path d="M10 1a1 1 0 0 1 1 1v1.323l3.954 1.582 1.599-.8a1 1 0 0 1 .894 1.79l-1.233.616 1.738 4.346a1 1 0 0 1-.293 1.143 3.002 3.002 0 0 1-4.318 0 1 1 0 0 1-.293-1.143l1.738-4.346L11 5.869V17h2a1 1 0 1 1 0 2H7a1 1 0 1 1 0-2h2V5.869L6.954 7.457l1.738 4.346a1 1 0 0 1-.293 1.143 3.002 3.002 0 0 1-4.318 0 1 1 0 0 1-.293-1.143L5.526 7.457 4.293 6.84a1 1 0 0 1 .894-1.789l1.599.8L10.74 4.27V2a1 1 0 0 1-1-1h.26Z"/></svg>
+          </div>
+          <div class="card-body">
+            <h3>Architecture</h3>
+            <p>Platform topology, SSOT boundaries, runtime identifiers, and the three-plane SaaS ERP model.</p>
+          </div>
+        </a>
+
+        <!-- Governance -->
+        <a class="card" href="#">
+          <div class="card-icon icon-gov">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 1a.75.75 0 0 1 .75.75v1.5a.75.75 0 0 1-1.5 0v-1.5A.75.75 0 0 1 10 1ZM5.05 3.05a.75.75 0 0 1 1.06 0l1.062 1.06a.75.75 0 1 1-1.06 1.06L5.05 4.11a.75.75 0 0 1 0-1.06ZM14.95 3.05a.75.75 0 0 1 0 1.06l-1.06 1.062a.75.75 0 0 1-1.062-1.06l1.06-1.062a.75.75 0 0 1 1.062 0ZM3 8a7 7 0 0 1 14 0v1a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V8Zm5 6.25a.75.75 0 0 1 .75-.75h2.5a.75.75 0 0 1 .75.75v.5c0 .966-.784 1.75-1.75 1.75h-.5A1.75 1.75 0 0 1 8 14.75v-.5Z" clip-rule="evenodd"/></svg>
+          </div>
+          <div class="card-body">
+            <h3>Governance</h3>
+            <p>Agent policies, spec kit contracts, SSOT doctrine, change-aware and release-aware rules.</p>
+          </div>
+        </a>
+
+        <!-- Runbooks -->
+        <a class="card" href="#">
+          <div class="card-icon icon-run">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M4.5 2A1.5 1.5 0 0 0 3 3.5v13A1.5 1.5 0 0 0 4.5 18h11a1.5 1.5 0 0 0 1.5-1.5V7.621a1.5 1.5 0 0 0-.44-1.06l-4.12-4.122A1.5 1.5 0 0 0 11.378 2H4.5Zm2.25 8.5a.75.75 0 0 0 0 1.5h6.5a.75.75 0 0 0 0-1.5h-6.5Zm0 3a.75.75 0 0 0 0 1.5h6.5a.75.75 0 0 0 0-1.5h-6.5Z" clip-rule="evenodd"/></svg>
+          </div>
+          <div class="card-body">
+            <h3>Runbooks</h3>
+            <p>Operational playbooks for deployment, incident response, database migrations, and module rollout.</p>
+          </div>
+        </a>
+
+        <!-- Knowledge Base -->
+        <a class="card" href="#">
+          <div class="card-icon icon-kb">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"><path d="M10.75 16.82A7.462 7.462 0 0 1 15 15.5c.71 0 1.396.098 2.046.282A.75.75 0 0 0 18 15.06V3.44a.75.75 0 0 0-.546-.722A9.006 9.006 0 0 0 15 2.5a8.96 8.96 0 0 0-4.25 1.065v13.254ZM9.25 4.565A8.96 8.96 0 0 0 5 3.5a9.006 9.006 0 0 0-2.454.218A.75.75 0 0 0 2 4.44v11.62a.75.75 0 0 0 .954.722A7.462 7.462 0 0 1 5 16.5a7.46 7.46 0 0 1 4.25 1.318V4.566Z"/></svg>
+          </div>
+          <div class="card-body">
+            <h3>Knowledge Base</h3>
+            <p>Guides, handbooks, research notes, and cross-team knowledge assets.</p>
+          </div>
+        </a>
+
+        <!-- Operating Model -->
+        <a class="card" href="#">
+          <div class="card-icon icon-ops">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M7.84 1.804A1 1 0 0 1 8.82 1h2.36a1 1 0 0 1 .98.804l.331 1.652a6.993 6.993 0 0 1 1.929 1.115l1.598-.54a1 1 0 0 1 1.186.447l1.18 2.044a1 1 0 0 1-.205 1.251l-1.267 1.113a7.047 7.047 0 0 1 0 2.228l1.267 1.113a1 1 0 0 1 .206 1.25l-1.18 2.045a1 1 0 0 1-1.187.447l-1.598-.54a6.993 6.993 0 0 1-1.929 1.115l-.33 1.652a1 1 0 0 1-.98.804H8.82a1 1 0 0 1-.98-.804l-.331-1.652a6.993 6.993 0 0 1-1.929-1.115l-1.598.54a1 1 0 0 1-1.186-.447l-1.18-2.044a1 1 0 0 1 .205-1.251l1.267-1.114a7.05 7.05 0 0 1 0-2.227L1.821 7.773a1 1 0 0 1-.206-1.25l1.18-2.045a1 1 0 0 1 1.187-.447l1.598.54A6.992 6.992 0 0 1 7.51 3.456l.33-1.652ZM10 13a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z" clip-rule="evenodd"/></svg>
+          </div>
+          <div class="card-body">
+            <h3>Operating Model</h3>
+            <p>Authority splits, merge policies, agent teams, RACI, and the delivery cadence.</p>
+          </div>
+        </a>
+
+        <!-- Audits & Evidence -->
+        <a class="card" href="#">
+          <div class="card-icon icon-aud">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 18a8 8 0 1 0 0-16 8 8 0 0 0 0 16Zm3.857-9.809a.75.75 0 0 0-1.214-.882l-3.483 4.79-1.88-1.88a.75.75 0 1 0-1.06 1.061l2.5 2.5a.75.75 0 0 0 1.137-.089l4-5.5Z" clip-rule="evenodd"/></svg>
+          </div>
+          <div class="card-body">
+            <h3>Audits &amp; Evidence</h3>
+            <p>Security audits, integration reviews, release readiness checks, and compliance evidence packs.</p>
+          </div>
+        </a>
+
+        <!-- Development -->
+        <a class="card" href="#">
+          <div class="card-icon icon-dev">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M6.28 5.22a.75.75 0 0 1 0 1.06L2.56 10l3.72 3.72a.75.75 0 0 1-1.06 1.06L.97 10.53a.75.75 0 0 1 0-1.06l4.25-4.25a.75.75 0 0 1 1.06 0Zm7.44 0a.75.75 0 0 1 1.06 0l4.25 4.25a.75.75 0 0 1 0 1.06l-4.25 4.25a.75.75 0 0 1-1.06-1.06L17.44 10l-3.72-3.72a.75.75 0 0 1 0-1.06ZM11.377 2.011a.75.75 0 0 1 .612.867l-2.5 14.5a.75.75 0 0 1-1.478-.255l2.5-14.5a.75.75 0 0 1 .866-.612Z" clip-rule="evenodd"/></svg>
+          </div>
+          <div class="card-body">
+            <h3>Development</h3>
+            <p>Module development guides, OCA workflow, Odoo 19 coding conventions, and testing recipes.</p>
+          </div>
+        </a>
+
+        <!-- Integrations -->
+        <a class="card" href="#">
+          <div class="card-icon icon-int">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"><path d="M12.232 4.232a2.5 2.5 0 0 1 3.536 3.536l-1.225 1.224a.75.75 0 0 0 1.061 1.06l1.224-1.224a4 4 0 0 0-5.656-5.656l-3 3a4 4 0 0 0 .225 5.865.75.75 0 0 0 .977-1.138 2.5 2.5 0 0 1-.142-3.667l3-3Z"/><path d="M11.603 7.963a.75.75 0 0 0-.977 1.138 2.5 2.5 0 0 1 .142 3.667l-3 3a2.5 2.5 0 0 1-3.536-3.536l1.225-1.224a.75.75 0 0 0-1.061-1.06l-1.224 1.224a4 4 0 1 0 5.656 5.656l3-3a4 4 0 0 0-.225-5.865Z"/></svg>
+          </div>
+          <div class="card-body">
+            <h3>Integrations</h3>
+            <p>Azure, Databricks, Foundry, MCP servers, n8n automations, and external service connectors.</p>
+          </div>
+        </a>
+
+        <!-- Brand & Design -->
+        <a class="card" href="#">
+          <div class="card-icon icon-brand">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M7 2a2 2 0 0 0-2 2v1a1 1 0 0 0 0 2v1a1 1 0 0 0 0 2v1a2 2 0 0 0 2 2h1.5l1.2 1.6a1 1 0 0 0 1.6 0l1.2-1.6H14a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2H7Zm2 3.5a.5.5 0 0 1 .5-.5h4a.5.5 0 0 1 0 1h-4a.5.5 0 0 1-.5-.5ZM9.5 7a.5.5 0 0 0 0 1h4a.5.5 0 0 0 0-1h-4ZM9 9.5a.5.5 0 0 1 .5-.5h4a.5.5 0 0 1 0 1h-4a.5.5 0 0 1-.5-.5Z" clip-rule="evenodd"/></svg>
+          </div>
+          <div class="card-body">
+            <h3>Brand &amp; Design</h3>
+            <p>Branding guidelines, design tokens, Pulser visual identity, and asset governance.</p>
+          </div>
+        </a>
+
+      </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+      <p>
+        <a href="https://github.com/Insightpulseai/docs">Insightpulseai/docs</a>
+        &middot; Published via GitHub Pages
+        &middot; &copy; 2026 InsightPulseAI
+      </p>
+    </footer>
+  </body>
+</html>
